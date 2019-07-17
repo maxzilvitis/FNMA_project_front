@@ -13,7 +13,16 @@ export default class Home extends React.Component {
             this.props.navigation.navigate('Appraisals')
           }
         />
-      </View>
+      {/* </View> */}
+      {/* <View style={styles.container}> */}
+      <Text> Click to add a new appraisal </Text>
+      <Button
+        title="Add New Appraisal"
+        onPress={() =>
+          this.props.navigation.navigate('NewAppraisal')
+        }
+      />
+    </View>
     );
   }
 }
