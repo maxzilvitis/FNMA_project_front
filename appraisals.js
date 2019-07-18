@@ -1,5 +1,23 @@
 import React from 'react';
-import { StyleSheet, Text, View, FlatList, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { TouchableHighlight } from 'react-native-gesture-handler';
+
+class MyListItem extends React.PureComponent {
+  _onPress = () => {
+    this.props.onPressItem(this.props.id);
+  };
+
+  render() {
+    const textColor = this.props.selected ? 'red' : 'black';
+    return (
+      <TouchableOpacity onPress={this._onPress}>
+        <View>
+          <Text style={{color: textColor, fontSize: 25, flexDirection: "row"}}>ID #{this.props.id}: {this.props.address}, {this.props.city}, {this.props.state}</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  }
+}
 
 export default class Appraisals extends React.Component {
 
@@ -30,24 +48,31 @@ export default class Appraisals extends React.Component {
                 isLoading: false,
                 dataSource : myJson
             })
-            //console.log(this.state.dataList);
-            //this.setState((state, props) => {
-            //    return {data: myJson};
-            //});
           }.bind(this))
           .catch((error) => {
             console.error(error);
           });
     }
-/*
-    renderItems() {
-        const items = this.dataList;
-        this.data.foreach( ( dataItem ) => {
-            items.put( <Text>{ dataItem.borrower }</Text> );
-        } )
-        return items;
-        }
-*/
+
+    //_keyExtractor = (item, index) => item.id;
+
+    _onPressItem = (id) => {
+      //console.log(id)
+      this.props.navigation.navigate('ViewAppraisal', {passedData: id})
+    }
+
+    _renderItem = ({item}) => (
+      <MyListItem
+        id={item.id}
+        onPressItem={this._onPressItem}
+        //selected={!!this.state.selected.get(item.id)}
+        id={item.id}
+        address={item.property_address}
+        city={item.city}
+        state={item.state}
+      />
+    )
+
   render() {
 
     if(this.state.isLoading){
@@ -62,33 +87,13 @@ export default class Appraisals extends React.Component {
         <View style={{flex: 1, paddingTop:20}}>
           <FlatList
             data={this.state.dataSource}
-            renderItem={({item}) => <Text>{item.id}, {item.property_address}, {item.city}, {item.state}</Text>}
-            keyExtractor={({id}, index) => id}
+            renderItem={this._renderItem}
+            //{({item}) => <Text>{item.id}, {item.property_address}, {item.city}, {item.state}</Text>}
+            keyExtractor={({id}, index) => id.toString()}//{this._keyExtractor}//{({id}, index) => id}
           />
         </View>
       );
-      /*
-    return (
-      <View style={styles.container}>
-        <Text> Add friends here! </Text>
-        <ListView
-            dataSource={this.state.dataList}
-            renderRow = {function(rowData) {
-                    return (
-                      <View style={styles.row}>
-                        <Text>{rowData.id}</Text>
-                        <Text>{rowData.property_address}</Text>
-                        <Text>{rowData.city}</Text>
-                      </View>
-                    );
-                  
-                //(rowData) => <Text>{rowData}</Text>}
-                }
-            }
-        />
-      </View>
-    );
-    */
+      
   }
 }
 

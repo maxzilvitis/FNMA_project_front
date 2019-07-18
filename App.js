@@ -6,6 +6,8 @@ import {
 import Home from './home';
 import Appraisals from './appraisals'
 import NewAppraisal from './newAppraisal'
+import ViewAppraisal from './viewAppraisal'
+import Camera from './camera'
 
 const RootStack = createStackNavigator({
   Home: {
@@ -16,6 +18,12 @@ const RootStack = createStackNavigator({
   },
   NewAppraisal: {
     screen: NewAppraisal
+  },
+  ViewAppraisal: {
+    screen: ViewAppraisal
+  },
+  Camera: {
+    screen: Camera
   }
 });
 

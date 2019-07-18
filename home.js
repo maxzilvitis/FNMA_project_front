@@ -22,6 +22,13 @@ export default class Home extends React.Component {
           this.props.navigation.navigate('NewAppraisal')
         }
       />
+      <Text> Click to add a new appraisal </Text>
+      <Button
+        title="Camera Test"
+        onPress={() =>
+          this.props.navigation.navigate('Camera')
+        }
+      />
     </View>
     );
   }
