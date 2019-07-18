@@ -6,8 +6,23 @@ export default class NewAppraisal extends React.Component {
 
     constructor(props){
         super(props);
-        this.state = {address: '', city: '', zip: '',county: '', province: '', borrower: '', owner_of_public_record: '' };
+        this.state = {property_address: '', city: '', state: '', zip_code: '', borrower: '', owner_of_public_record: '', county:''};
+        
     }
+    onSubmit = async () => {
+        console.log(JSON.stringify(this.state))
+        fetch('http://ec2-54-89-250-141.compute-1.amazonaws.com:3000/house', {
+            method:'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(this.state)
+
+        })
+        //.then((reponse) => Response.JSON())
+        
+    }
+
     render() {
         return (
             
@@ -27,8 +42,8 @@ export default class NewAppraisal extends React.Component {
                         textAlign:"center"}
                     }
                 placeholder=" Property Address..." 
-                onChangeText={(address) => this.setState({address})}
-                value={this.state.address}
+                onChangeText={(property_address) => this.setState({property_address})}
+                value={this.state.property_address}
                 />
 
                 <TextInput
@@ -49,6 +64,24 @@ export default class NewAppraisal extends React.Component {
                 value={this.state.city}
                 /> 
 
+                <TextInput
+                style = {
+                    {   height:30,
+                        width:"50%",
+                        borderColor:'blue',
+                        borderWidth:1,
+                        marginBottom: 20,
+                        borderTopRightRadius:10,
+                        borderBottomRightRadius:10,
+                        borderTopLeftRadius:10,
+                        borderBottomLeftRadius:10,
+                        textAlign:"center"}
+                    }
+                placeholder=" State..." 
+                onChangeText={(state) => this.setState({state})}
+                value={this.state.state}
+                />
+
                 {/* make the state selection a picker*/}
 
                 <TextInput
@@ -66,10 +99,10 @@ export default class NewAppraisal extends React.Component {
                         textAlign:"center"}
                     }
                 placeholder=" Zip Code..." 
-                keyboardType='numeric'
+                //keyboardType='numeric'
                 maxLength={5}
-                onChangeText={(zip) => this.setState({zip})}
-                value={this.state.zip}
+                onChangeText={(zip_code) => this.setState({zip_code})}
+                value={this.state.zip_code}
                 /> 
 
                 {/*}
@@ -142,8 +175,8 @@ export default class NewAppraisal extends React.Component {
                 value={this.state.owner_of_public_record}
                 />
 
-                
-                
+                <Button style={{color:'green'}} title="Submit" onPress = {() => {this.onSubmit()}}></Button>
+ 
 
             </View>
         );
