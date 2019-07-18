@@ -38,7 +38,7 @@ export default class Appraisals extends React.Component {
     }
 
     getAppraisals(){
-        fetch('ADD_LINK_HERE')
+        fetch('ADD_LINK')
         .then(function(response) {
             return response.json();
           })

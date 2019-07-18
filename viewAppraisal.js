@@ -39,7 +39,7 @@ export default class ViewAppraisal extends React.Component {
     }
 
     getAppraisalInfo(){
-        fetch('ADD_LINK_HERE' + '?id=' + this.props.navigation.state.params.passedData)
+        fetch('ADD_LINK' + '?id=' + this.props.navigation.state.params.passedData)
         .then(function(response) {
             return response.json();
           })
