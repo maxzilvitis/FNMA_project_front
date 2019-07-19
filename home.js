@@ -22,7 +22,8 @@ export default class Home extends React.Component {
           this.props.navigation.navigate('NewAppraisal')
         }
       />
-      <Text> Click to use camera </Text>
+
+      {/* <Text> Click to use camera </Text>
       <Button
         title="Camera Test"
         onPress={() =>
@@ -35,7 +36,8 @@ export default class Home extends React.Component {
         onPress={() =>
           this.props.navigation.navigate('Pictures')
         }
-      />
+      /> */}
+
     </View>
     );
   }

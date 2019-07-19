@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, FlatList, ActivityIndicator, TouchableOpacity, Image } from 'react-native';
 
 class MyListItem extends React.PureComponent {
     //_onPress = () => {
@@ -7,6 +7,7 @@ class MyListItem extends React.PureComponent {
     //};
   
     render() {
+      //let { image } = this.state;
       const textColor = this.props.selected ? 'red' : 'black';
       return (
         <TouchableOpacity onPress={this._onPress}>
@@ -18,6 +19,9 @@ class MyListItem extends React.PureComponent {
             <Text style={{fontSize: 25}}>Borrower: {this.props.borrower}</Text>
             <Text style={{fontSize: 25}}>Owner: {this.props.owner}</Text>
             <Text style={{fontSize: 25}}>County: {this.props.county}</Text>
+            {/* {image && */}
+              <Image source={{uri: this.props.img}} style={{ width: 200, height: 200 }} />
+            {/* } */}
           </View>
         </TouchableOpacity>
       );
@@ -30,7 +34,8 @@ export default class ViewAppraisal extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            isLoading : true
+            isLoading : true,
+            //image : null
         };
       }
 
@@ -39,7 +44,7 @@ export default class ViewAppraisal extends React.Component {
     }
 
     getAppraisalInfo(){
-        fetch('ADD_LINK' + '?id=' + this.props.navigation.state.params.passedData)
+        fetch('http://ec2-54-89-250-141.compute-1.amazonaws.com:3000/list/query/byID' + '?id=' + this.props.navigation.state.params.passedData)
         .then(function(response) {
             return response.json();
           })
@@ -68,6 +73,7 @@ export default class ViewAppraisal extends React.Component {
           borrower={item.borrower}
           owner={item.owner_of_public_record}
           county={item.county}
+          img={item.attachment_location}
         />
       )
 

@@ -38,7 +38,7 @@ export default class Appraisals extends React.Component {
     }
 
     getAppraisals(){
-        fetch('ADD_LINK')
+        fetch('http://ec2-54-89-250-141.compute-1.amazonaws.com:3000/list')
         .then(function(response) {
             return response.json();
           })

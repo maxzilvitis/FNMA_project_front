@@ -26,28 +26,18 @@ export default class Pictures extends React.Component {
     };
 
     createFormData = (photo) => {
-
-        //const myuri = photo.uri;
-        //const uriParts = uri.split('.');
-        //const fileType = uriParts[uriParts.length - 1];
-        //const formData = new FormData();
         var data = new FormData();
-        
         data.append("file", {
             name: 'my_photo.jpg',
             type: 'image/jpg',
             uri: photo.uri.replace("file://", "")
           });
-
         console.log(data);
-
-      
-      
         return data;
       };
 
       handleUploadPhoto = () => {
-        fetch("ADD_LINK", {
+        fetch("http://ec2-54-89-250-141.compute-1.amazonaws.com:3000/file", {
           method: "POST",
           body: this.createFormData(this.state.image)
         })

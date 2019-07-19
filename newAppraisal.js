@@ -1,14 +1,73 @@
 import React from 'react';
-import { StyleSheet, Text, TextInput, View, FlatList, ActivityIndicator, Picker, Platform, KeyboardType, Button} from 'react-native';
+import { StyleSheet, Text, TextInput, View, FlatList, ActivityIndicator, Picker, Platform, KeyboardType, Button, Image} from 'react-native';
 import { FormLabel, FormInput, FormValidationMessage} from 'react-native-elements';
+import { Permissions, ImagePicker } from 'expo';
+
 
 export default class NewAppraisal extends React.Component {
 
     constructor(props){
         super(props);
-        this.state = {property_address: '', city: '', state: '', zip_code: '', borrower: '', owner_of_public_record: '', county:''};
+        this.state = {property_address: '', city: '', state: '', zip_code: '', borrower: '', owner_of_public_record: '', county:'',
+        photos : [],
+        hasStoragePermission: null,
+        image : null,
+        new_id : null
+        };
         
     }
+
+    async componentDidMount() {
+        const storage = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+        const hasStoragePermission = (storage.status === 'granted');
+
+        this.setState({ hasStoragePermission });
+    };
+
+    createFormData = (photo) => {
+        var data = new FormData();
+        data.append("file", {
+            name: 'my_photo.jpg',
+            type: 'image/jpg',
+            uri: photo.uri.replace("file://", "")
+          });
+        data.append("id", this.state.new_id);
+        console.log(data);
+        return data;
+      };
+
+      handleUploadPhoto = () => {
+        fetch("http://ec2-54-89-250-141.compute-1.amazonaws.com:3000/file", {
+          method: "POST",
+          body: this.createFormData(this.state.image)
+        })
+          .then(response => response.text())
+          .then(response => {
+            console.log("upload success", response);
+            alert("Upload success!");
+            this.setState({ photo: null });
+            this.props.navigation.navigate('Home');
+          })
+          .catch(error => {
+            console.log("upload error", error);
+            alert("Upload failed!");
+          });
+      };
+
+      _pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.All,
+          allowsEditing: false,
+          aspect: [4, 3],
+        });
+    
+        console.log(result);
+    
+        if (!result.cancelled) {
+          this.setState({ image: result });
+        }
+      };
+
     onSubmit = async () => {
         console.log(JSON.stringify(this.state))
         fetch('http://ec2-54-89-250-141.compute-1.amazonaws.com:3000/house', {
@@ -19,11 +78,28 @@ export default class NewAppraisal extends React.Component {
             body: JSON.stringify(this.state)
 
         })
-        //.then((reponse) => Response.JSON())
+        .then(response => response.json())
+        .then((responseJSON) => {
+            console.log('post response', responseJSON.body.id);
+            this.setState({ 
+                new_id: responseJSON.body.id,
+            })
+        })
+        .then(() => {
+            if(!this.props.image){
+                this.props.navigation.navigate('Home');
+            }
+            else{
+                this.handleUploadPhoto();
+            }
+        })
         
     }
 
     render() {
+
+        let { image } = this.state;
+
         return (
             
             <View style={styles.container}>
@@ -174,6 +250,21 @@ export default class NewAppraisal extends React.Component {
                 onChangeText={(owner_of_public_record) => this.setState({owner_of_public_record})}
                 value={this.state.owner_of_public_record}
                 />
+
+                <Button
+                    title="Pick an image from camera roll"
+                    onPress={this._pickImage}
+                    />
+                    {image &&
+                    <Image source={{ uri: image.uri }} style={{ width: 200, height: 200}} />
+                    }
+
+                    {/* {image &&
+                        <Button
+                        title="Upload Image"
+                        onPress={this.handleUploadPhoto}
+                        />
+                    } */}
 
                 <Button style={{color:'green'}} title="Submit" onPress = {() => {this.onSubmit()}}></Button>
  
